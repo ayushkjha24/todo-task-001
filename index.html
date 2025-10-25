@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Todo List</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #0b1020;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --danger: #f87171;
+      --border: #1f2937;
+      --input: #0b1020;
+      --shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: radial-gradient(1200px 800px at 10% -20%, #0b1020 0, #060914 50%, #05070e 100%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 16px 80px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+      display: grid;
+      place-items: center;
+      color: #031226;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      letter-spacing: 0.2px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-left: auto;
+    }
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .image-wrap {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom: 1px solid var(--border);
+      padding: 10px;
+    }
+    .image-wrap img {
+      display: block;
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #0b1020;
+    }
+    .controls {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+    }
+    label {
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+    }
+    .input {
+      display: flex;
+      gap: 10px;
+      grid-column: 1 / -1;
+    }
+    input[type="text"] {
+      flex: 1;
+      background: var(--input);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[type="text"]::placeholder { color: #6b7280; }
+    input[type="text"]:focus {
+      border-color: #3b82f6aa;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+    }
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.04s ease, filter 0.15s ease, background 0.2s;
+      color: #061224;
+    }
+    .btn-add {
+      background: linear-gradient(135deg, #60a5fa, #34d399);
+    }
+    .btn-add:active { transform: translateY(1px); }
+    .list {
+      padding: 8px 8px 16px;
+      background: transparent;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    li {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 10px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    li:hover {
+      background: rgba(255,255,255,0.045);
+      border-color: #273247;
+    }
+    .todo-text {
+      overflow-wrap: anywhere;
+      padding: 6px 6px 6px 10px;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-remove {
+      background: linear-gradient(135deg, #fda4af, #f87171);
+      color: #1f0a0a;
+      padding: 10px 12px;
+    }
+    .btn-remove:active { transform: translateY(1px); }
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 22px 8px 8px;
+      font-size: 0.98rem;
+    }
+    .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .count {
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+    @media (min-width: 720px) {
+      .controls { grid-template-columns: 1fr auto; }
+      .input { grid-column: 1 / 2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo" aria-hidden="true">✓</div>
+      <h1>Todo List</h1>
+      <div class="sub" id="taskCount" aria-live="polite">0 items</div>
+    </header>
+
+    <section class="panel">
+      <div class="image-wrap">
+        <img id="sampleImage" alt="Sample image (customizable via ?url=...)" />
+      </div>
+
+      <form class="controls" id="todoForm" autocomplete="off">
+        <label for="todoInput">New todo</label>
+        <div class="input">
+          <input id="todoInput" type="text" placeholder="What do you want to do?" maxlength="200" />
+          <button type="submit" class="btn-add" title="Add todo">Add</button>
+        </div>
+      </form>
+
+      <div class="list" id="listWrap">
+        <ul id="todoList" aria-live="polite" aria-label="Todo items"></ul>
+        <div class="empty" id="emptyState">No todos yet — add your first one above.</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Tip: You can provide an image via the url query param, e.g. ?url=https%3A%2F%2Fexample.com%2Fimage.png
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const qs = (sel, el = document) => el.querySelector(sel);
+      const elForm = qs('#todoForm');
+      const elInput = qs('#todoInput');
+      const elList = qs('#todoList');
+      const elEmpty = qs('#emptyState');
+      const elCount = qs('#taskCount');
+      const elImg = qs('#sampleImage');
+      const STORAGE_KEY = 'simple-todos-v1';
+
+      function buildDefaultImageDataUrl() {
+        const svg =
+          "<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='480' viewBox='0 0 1200 480'>" +
+          "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#0ea5e9' stop-opacity='.25'/>" +
+          "<stop offset='100%' stop-color='#22c55e' stop-opacity='.25'/></linearGradient></defs>" +
+          "<rect width='1200' height='480' fill='#0b1020'/>" +
+          "<rect x='24' y='24' width='1152' height='432' rx='18' fill='url(#g)'/>" +
+          "<g font-family='system-ui,Segoe UI,Roboto,Helvetica,Arial' text-anchor='middle'>" +
+          "<text x='600' y='225' font-size='44' fill='#e5e7eb'>Todo List Sample Image</text>" +
+          "<text x='600' y='270' font-size='20' fill='#9ca3af'>Override with ?url=... in the address bar</text>" +
+          "</g></svg>";
+        return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+      }
+
+      function isSafeImageUrl(url) {
+        try {
+          if (typeof url !== 'string' || !url) return false;
+          if (url.startsWith('data:')) {
+            // Only allow data:image/* URIs
+            return /^data:image\/[a-zA-Z0-9.+-]+[;,]/.test(url) || url.startsWith('data:image/svg+xml');
+          }
+          const u = new URL(url, window.location.href);
+          return u.protocol === 'http:' || u.protocol === 'https:';
+        } catch {
+          return false;
+        }
+      }
+
+      function setSampleImage() {
+        const params = new URLSearchParams(location.search);
+        const provided = params.get('url');
+        const fallback = buildDefaultImageDataUrl();
+
+        if (provided && isSafeImageUrl(provided)) {
+          elImg.src = provided;
+        } else {
+          elImg.src = fallback;
+        }
+        elImg.addEventListener('error', () => {
+          elImg.src = fallback;
+        }, { once: true });
+      }
+
+      function loadTodos() {
+        try {
+          const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          if (Array.isArray(data)) return data.slice(0, 500);
+        } catch {}
+        return [];
+      }
+
+      function saveTodos(list) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch {}
+      }
+
+      let todos = loadTodos();
+
+      function updateCount() {
+        const n = todos.length;
+        elCount.textContent = n === 1 ? '1 item' : n + ' items';
+      }
+
+      function render() {
+        elList.innerHTML = '';
+        if (todos.length === 0) {
+          elEmpty.style.display = 'block';
+        } else {
+          elEmpty.style.display = 'none';
+          const frag = document.createDocumentFragment();
+          todos.forEach((t, idx) => {
+            const li = document.createElement('li');
+
+            const span = document.createElement('div');
+            span.className = 'todo-text';
+            span.textContent = t;
+
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+
+            const btnDel = document.createElement('button');
+            btnDel.type = 'button';
+            btnDel.className = 'btn-remove';
+            btnDel.setAttribute('aria-label', 'Remove todo');
+            btnDel.textContent = 'Remove';
+            btnDel.dataset.index = String(idx);
+
+            actions.appendChild(btnDel);
+            li.appendChild(span);
+            li.appendChild(actions);
+            frag.appendChild(li);
+          });
+          elList.appendChild(frag);
+        }
+        updateCount();
+      }
+
+      function addTodo(text) {
+        const t = (text || '').trim();
+        if (!t) return;
+        todos.push(t);
+        saveTodos(todos);
+        render();
+      }
+
+      function removeAt(index) {
+        if (index < 0 || index >= todos.length) return;
+        todos.splice(index, 1);
+        saveTodos(todos);
+        render();
+      }
+
+      // Event: add
+      elForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        addTodo(elInput.value);
+        elInput.value = '';
+        elInput.focus();
+      });
+
+      // Event delegation: remove
+      elList.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && target.classList.contains('btn-remove')) {
+          const idx = Number(target.dataset.index);
+          removeAt(idx);
+        }
+      });
+
+      // Initialize
+      setSampleImage();
+      render();
+
+      // Quality of life: add with Enter quickly
+      elInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          // form submit already handles it; keep for responsiveness
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
