@@ -1,376 +1,579 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simple Todo List</title>
+  <title>Todo List — Round 2</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #0b1020;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #60a5fa;
-      --accent-2: #34d399;
-      --danger: #f87171;
-      --border: #1f2937;
-      --input: #0b1020;
-      --shadow: 0 10px 30px rgba(0,0,0,0.3);
+    :root{
+      --bg1: #0f172a;         /* slate-900 */
+      --bg2: #1e293b;         /* slate-800 */
+      --card: rgba(255,255,255,0.07);
+      --card-strong: rgba(255,255,255,0.12);
+      --text: #e5e7eb;        /* gray-200 */
+      --muted: #9ca3af;       /* gray-400 */
+      --accent: #7c3aed;      /* violet-600 */
+      --accent-2: #a78bfa;    /* violet-300 */
+      --danger: #ef4444;      /* red-500 */
+      --ok: #22c55e;          /* green-500 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
     }
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: radial-gradient(1200px 800px at 10% -20%, #0b1020 0, #060914 50%, #05070e 100%);
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
       color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 32px 16px 80px;
-    }
-    header {
-      display: flex;
+      background:
+        radial-gradient(1200px 800px at -10% -10%, #111827 25%, transparent 26%),
+        radial-gradient(900px 600px at 110% 0%, #0b1220 20%, transparent 21%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height: 100%;
+      display:flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      justify-content: center;
+      padding: 36px 16px;
     }
-    .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #60a5fa, #34d399);
-      display: grid;
-      place-items: center;
-      color: #031226;
-      font-weight: 900;
+    .app{
+      width: 100%;
+      max-width: 780px;
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-    }
-    h1 {
-      margin: 0;
-      font-size: 1.75rem;
-      letter-spacing: 0.2px;
-    }
-    .sub {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin-left: auto;
-    }
-    .panel {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       overflow: hidden;
     }
-    .image-wrap {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-bottom: 1px solid var(--border);
-      padding: 10px;
-    }
-    .image-wrap img {
-      display: block;
-      width: 100%;
-      max-height: 260px;
-      object-fit: cover;
-      border-radius: 10px;
-      background: #0b1020;
-    }
-    .controls {
-      padding: 16px;
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1fr auto;
+    header{
+      padding: 22px 22px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display:flex;
       align-items: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+      justify-content: space-between;
+      gap: 12px;
     }
-    label {
-      position: absolute;
-      left: -9999px;
-      top: -9999px;
+    .title{
+      display:flex;
+      align-items: center;
+      gap: 12px;
     }
-    .input {
-      display: flex;
+    .logo{
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display:grid; place-items:center;
+      box-shadow: 0 10px 20px rgba(124,58,237,.35), inset 0 0 0 1px rgba(255,255,255,.3);
+    }
+    .logo svg{ width:20px; height:20px; color: white; }
+    h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing: .3px;
+    }
+
+    main{ padding: 16px 22px 8px; }
+
+    .bar{
+      display:grid;
+      grid-template-columns: 1fr auto;
       gap: 10px;
-      grid-column: 1 / -1;
+      align-items: center;
+      margin-bottom: 12px;
     }
-    input[type="text"] {
-      flex: 1;
-      background: var(--input);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 1rem;
+    .input{
+      display:flex; align-items:center; gap: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+    .input input[type="text"]{
+      flex:1;
+      background: transparent;
+      border: none;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text);
+      font-size: 16px;
     }
-    input[type="text"]::placeholder { color: #6b7280; }
-    input[type="text"]:focus {
-      border-color: #3b82f6aa;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-    }
-    button {
+    .input input::placeholder{ color: var(--muted); }
+    .btn{
       appearance: none;
       border: none;
+      background: linear-gradient(135deg, var(--accent), #6d28d9);
+      color: white;
+      padding: 10px 14px;
       border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
+      font-weight: 600;
+      letter-spacing: .2px;
       cursor: pointer;
-      transition: transform 0.04s ease, filter 0.15s ease, background 0.2s;
-      color: #061224;
+      box-shadow: 0 8px 16px rgba(124,58,237,.35);
+      transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
     }
-    .btn-add {
-      background: linear-gradient(135deg, #60a5fa, #34d399);
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.secondary{
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .btn-add:active { transform: translateY(1px); }
-    .list {
-      padding: 8px 8px 16px;
+    .controls{
+      display:flex; align-items:center; justify-content: space-between;
+      gap: 8px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .filters{ display:flex; gap: 6px; background: rgba(255,255,255,0.04); padding: 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
+    .filter{
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
       background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
     }
-    ul {
+    .filter:hover{ background: rgba(255,255,255,0.06); }
+    .filter.active{
+      background: rgba(124,58,237,0.14);
+      border-color: rgba(124,58,237,0.45);
+      color: white;
+    }
+    .meta{
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    ul#todo-list{
       list-style: none;
-      padding: 0;
       margin: 0;
-      display: grid;
-      gap: 8px;
+      padding: 0;
+      display:flex; flex-direction: column; gap: 10px;
+      min-height: 30px;
     }
-    li {
-      display: grid;
+    .empty{
+      color: var(--muted);
+      font-size: 15px;
+      text-align: center;
+      padding: 14px 8px 4px;
+    }
+
+    .todo-item{
+      display:grid;
       grid-template-columns: 1fr auto;
       align-items: center;
       gap: 10px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 10px;
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-    li:hover {
-      background: rgba(255,255,255,0.045);
-      border-color: #273247;
-    }
-    .todo-text {
-      overflow-wrap: anywhere;
-      padding: 6px 6px 6px 10px;
-    }
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-remove {
-      background: linear-gradient(135deg, #fda4af, #f87171);
-      color: #1f0a0a;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
       padding: 10px 12px;
+      transition: background .2s ease, border-color .2s ease, transform .08s ease;
     }
-    .btn-remove:active { transform: translateY(1px); }
-    .empty {
+    .todo-item:hover{
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.16);
+    }
+    .todo{
+      display:flex; align-items: center; gap: 10px;
+      user-select: none;
+    }
+    .todo input[type="checkbox"]{
+      width: 18px; height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .todo .text{
+      flex: 1;
+      padding: 6px 4px;
+      border-radius: 6px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    .todo-item.completed .text{
+      text-decoration: line-through;
+      color: #9aa1ad;
+    }
+
+    .actions{
+      display:flex; align-items:center; gap: 6px;
+      opacity: .85;
+    }
+    .icon-btn{
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+      width: 36px; height: 36px; border-radius: 10px;
+      display:grid; place-items:center;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, transform .08s ease;
+    }
+    .icon-btn:hover{ background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); }
+    .icon-btn:active{ transform: translateY(1px) scale(.98); }
+    .icon-btn.danger:hover{ border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.15); color: #fecaca; }
+
+    .edit-input{
+      width: 100%;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 15px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .edit-input::placeholder{ color: var(--muted); }
+    footer{
+      padding: 6px 22px 18px;
+      display:flex; align-items:center; justify-content: space-between; gap: 10px;
       color: var(--muted);
-      text-align: center;
-      padding: 22px 8px 8px;
-      font-size: 0.98rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
-    .footer {
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 0.9rem;
+
+    /* focus styles */
+    .btn:focus-visible, .icon-btn:focus-visible, .filter:focus-visible, .edit-input:focus-visible, input[type="text"]:focus-visible{
+      outline: 2px solid var(--accent-2);
+      outline-offset: 2px;
     }
-    .count {
-      color: var(--accent-2);
-      font-weight: 700;
+
+    /* small screens */
+    @media (max-width: 520px){
+      .controls{ flex-direction: column; align-items: stretch; }
+      .filters{ justify-content: space-between; }
+      .actions{ opacity: 1; }
     }
-    @media (min-width: 720px) {
-      .controls { grid-template-columns: 1fr auto; }
-      .input { grid-column: 1 / 2; }
+
+    /* subtle add/remove animation */
+    .fade-in{
+      animation: fadeIn .18s ease-out;
+    }
+    @keyframes fadeIn{
+      from{ opacity: 0; transform: translateY(4px); }
+      to{ opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="app" role="application" aria-label="Todo list application">
     <header>
-      <div class="logo" aria-hidden="true">✓</div>
-      <h1>Todo List</h1>
-      <div class="sub" id="taskCount" aria-live="polite">0 items</div>
+      <div class="title">
+        <div class="logo" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 4 4 12-12"/>
+          </svg>
+        </div>
+        <h1>Todos</h1>
+      </div>
+      <span class="meta" id="last-saved" aria-live="polite"></span>
     </header>
 
-    <section class="panel">
-      <div class="image-wrap">
-        <img id="sampleImage" alt="Sample image (customizable via ?url=...)" />
-      </div>
-
-      <form class="controls" id="todoForm" autocomplete="off">
-        <label for="todoInput">New todo</label>
+    <main>
+      <form id="todo-form" class="bar" autocomplete="off">
         <div class="input">
-          <input id="todoInput" type="text" placeholder="What do you want to do?" maxlength="200" />
-          <button type="submit" class="btn-add" title="Add todo">Add</button>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".6"/>
+            <circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.6" opacity=".6"/>
+          </svg>
+          <input id="todo-input" type="text" placeholder="Add a task and press Enter..." aria-label="New todo" />
         </div>
+        <button type="submit" class="btn" aria-label="Add todo">Add</button>
       </form>
 
-      <div class="list" id="listWrap">
-        <ul id="todoList" aria-live="polite" aria-label="Todo items"></ul>
-        <div class="empty" id="emptyState">No todos yet — add your first one above.</div>
+      <div class="controls">
+        <div class="filters" role="tablist" aria-label="Filter todos">
+          <button class="filter active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter" data-filter="active" role="tab" aria-selected="false">Active</button>
+          <button class="filter" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+        </div>
+        <button id="clear-completed" class="btn secondary" aria-label="Clear completed todos">Clear completed</button>
       </div>
-    </section>
 
-    <div class="footer">
-      Tip: You can provide an image via the url query param, e.g. ?url=https%3A%2F%2Fexample.com%2Fimage.png
-    </div>
+      <ul id="todo-list" aria-live="polite" aria-label="Todo items"></ul>
+      <div id="empty" class="empty" hidden>You're all caught up. Add your first todo above!</div>
+    </main>
+
+    <footer>
+      <div id="items-left">0 items left</div>
+      <div class="meta">Tip: Double‑click a todo or press the pencil to edit. Press Enter to save, Esc to cancel.</div>
+    </footer>
   </div>
 
+  <template id="todo-item-template">
+    <li class="todo-item fade-in">
+      <label class="todo">
+        <input type="checkbox" class="toggle" aria-label="Toggle completed" />
+        <span class="text"></span>
+      </label>
+      <div class="actions">
+        <button class="icon-btn btn-edit" title="Edit" aria-label="Edit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15.232 5.232 18.768 8.768M4 20l4.5-1 10.5-10.5-3.5-3.5L5 15.5 4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="icon-btn danger btn-delete" title="Delete" aria-label="Delete">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 7h12m-9 3v7m6-7v7M9 4h6l1 3H8l1-3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </li>
+  </template>
+
   <script>
-    (function () {
-      const qs = (sel, el = document) => el.querySelector(sel);
-      const elForm = qs('#todoForm');
-      const elInput = qs('#todoInput');
-      const elList = qs('#todoList');
-      const elEmpty = qs('#emptyState');
-      const elCount = qs('#taskCount');
-      const elImg = qs('#sampleImage');
-      const STORAGE_KEY = 'simple-todos-v1';
+    (function(){
+      const STORAGE_KEY = 'todo.round2.todos';
+      const STORAGE_FILTER_KEY = 'todo.round2.filter';
+      const STORAGE_SAVED_AT_KEY = 'todo.round2.savedAt';
 
-      function buildDefaultImageDataUrl() {
-        const svg =
-          "<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='480' viewBox='0 0 1200 480'>" +
-          "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#0ea5e9' stop-opacity='.25'/>" +
-          "<stop offset='100%' stop-color='#22c55e' stop-opacity='.25'/></linearGradient></defs>" +
-          "<rect width='1200' height='480' fill='#0b1020'/>" +
-          "<rect x='24' y='24' width='1152' height='432' rx='18' fill='url(#g)'/>" +
-          "<g font-family='system-ui,Segoe UI,Roboto,Helvetica,Arial' text-anchor='middle'>" +
-          "<text x='600' y='225' font-size='44' fill='#e5e7eb'>Todo List Sample Image</text>" +
-          "<text x='600' y='270' font-size='20' fill='#9ca3af'>Override with ?url=... in the address bar</text>" +
-          "</g></svg>";
-        return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+      const $ = (sel, ctx=document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+      const form = $('#todo-form');
+      const input = $('#todo-input');
+      const list = $('#todo-list');
+      const empty = $('#empty');
+      const itemsLeft = $('#items-left');
+      const lastSaved = $('#last-saved');
+      const clearCompletedBtn = $('#clear-completed');
+      const filterButtons = $$('.filter');
+      const tmpl = $('#todo-item-template');
+
+      let todos = [];
+      let filter = 'all';
+
+      function load(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          todos = Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : [];
+        }catch{ todos = []; }
+        try{
+          const f = localStorage.getItem(STORAGE_FILTER_KEY);
+          if (f) filter = f;
+        }catch{}
+        try{
+          const ts = localStorage.getItem(STORAGE_SAVED_AT_KEY);
+          if (ts) lastSaved.textContent = 'Saved ' + timeAgo(Number(ts));
+        }catch{}
       }
 
-      function isSafeImageUrl(url) {
-        try {
-          if (typeof url !== 'string' || !url) return false;
-          if (url.startsWith('data:')) {
-            // Only allow data:image/* URIs
-            return /^data:image\/[a-zA-Z0-9.+-]+[;,]/.test(url) || url.startsWith('data:image/svg+xml');
-          }
-          const u = new URL(url, window.location.href);
-          return u.protocol === 'http:' || u.protocol === 'https:';
-        } catch {
-          return false;
-        }
+      function save(){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+        const now = Date.now();
+        localStorage.setItem(STORAGE_SAVED_AT_KEY, String(now));
+        lastSaved.textContent = 'Saved ' + timeAgo(now);
       }
 
-      function setSampleImage() {
-        const params = new URLSearchParams(location.search);
-        const provided = params.get('url');
-        const fallback = buildDefaultImageDataUrl();
-
-        if (provided && isSafeImageUrl(provided)) {
-          elImg.src = provided;
-        } else {
-          elImg.src = fallback;
-        }
-        elImg.addEventListener('error', () => {
-          elImg.src = fallback;
-        }, { once: true });
+      function saveFilter(){
+        localStorage.setItem(STORAGE_FILTER_KEY, filter);
       }
 
-      function loadTodos() {
-        try {
-          const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-          if (Array.isArray(data)) return data.slice(0, 500);
-        } catch {}
-        return [];
+      function timeAgo(ts){
+        const diff = Math.max(0, Date.now() - ts);
+        const s = Math.round(diff/1000);
+        if (s < 5) return 'just now';
+        if (s < 60) return s + 's ago';
+        const m = Math.round(s/60);
+        if (m < 60) return m + 'm ago';
+        const h = Math.round(m/60);
+        if (h < 24) return h + 'h ago';
+        const d = Math.round(h/24);
+        return d + 'd ago';
       }
 
-      function saveTodos(list) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-        } catch {}
+      function createTodo(text){
+        return {
+          id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2,8)),
+          text: text,
+          completed: false,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
       }
 
-      let todos = loadTodos();
-
-      function updateCount() {
-        const n = todos.length;
-        elCount.textContent = n === 1 ? '1 item' : n + ' items';
-      }
-
-      function render() {
-        elList.innerHTML = '';
-        if (todos.length === 0) {
-          elEmpty.style.display = 'block';
-        } else {
-          elEmpty.style.display = 'none';
-          const frag = document.createDocumentFragment();
-          todos.forEach((t, idx) => {
-            const li = document.createElement('li');
-
-            const span = document.createElement('div');
-            span.className = 'todo-text';
-            span.textContent = t;
-
-            const actions = document.createElement('div');
-            actions.className = 'actions';
-
-            const btnDel = document.createElement('button');
-            btnDel.type = 'button';
-            btnDel.className = 'btn-remove';
-            btnDel.setAttribute('aria-label', 'Remove todo');
-            btnDel.textContent = 'Remove';
-            btnDel.dataset.index = String(idx);
-
-            actions.appendChild(btnDel);
-            li.appendChild(span);
-            li.appendChild(actions);
-            frag.appendChild(li);
-          });
-          elList.appendChild(frag);
-        }
-        updateCount();
-      }
-
-      function addTodo(text) {
-        const t = (text || '').trim();
+      function addTodo(text){
+        const t = text.trim();
         if (!t) return;
-        todos.push(t);
-        saveTodos(todos);
+        todos.unshift(createTodo(t));
+        save();
         render();
       }
 
-      function removeAt(index) {
-        if (index < 0 || index >= todos.length) return;
-        todos.splice(index, 1);
-        saveTodos(todos);
+      function toggleTodo(id){
+        const t = todos.find(x => x.id === id);
+        if (t){
+          t.completed = !t.completed;
+          t.updatedAt = Date.now();
+          save();
+          render();
+        }
+      }
+
+      function deleteTodo(id){
+        const idx = todos.findIndex(x => x.id === id);
+        if (idx !== -1){
+          todos.splice(idx,1);
+          save();
+          render();
+        }
+      }
+
+      function updateTodoText(id, newText){
+        const t = todos.find(x => x.id === id);
+        if (t){
+          const v = newText.trim();
+          if (v){
+            t.text = v;
+            t.updatedAt = Date.now();
+            save();
+            render();
+          }
+        }
+      }
+
+      function clearCompleted(){
+        const hadCompleted = todos.some(t=>t.completed);
+        if (!hadCompleted) return;
+        todos = todos.filter(t=>!t.completed);
+        save();
         render();
       }
 
-      // Event: add
-      elForm.addEventListener('submit', (e) => {
+      function setFilter(f){
+        filter = f;
+        saveFilter();
+        render();
+      }
+
+      function filteredTodos(){
+        if (filter === 'active') return todos.filter(t=>!t.completed);
+        if (filter === 'completed') return todos.filter(t=>t.completed);
+        return todos.slice();
+      }
+
+      function render(){
+        // filters state
+        filterButtons.forEach(btn=>{
+          const active = btn.dataset.filter === filter;
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-selected', String(active));
+        });
+
+        // list
+        list.innerHTML = '';
+        const cur = filteredTodos();
+        if (cur.length === 0){
+          empty.hidden = false;
+        } else {
+          empty.hidden = true;
+          cur.forEach(todo=>{
+            const node = tmpl.content.firstElementChild.cloneNode(true);
+            node.dataset.id = todo.id;
+            if (todo.completed) node.classList.add('completed');
+
+            const checkbox = $('.toggle', node);
+            checkbox.checked = todo.completed;
+            checkbox.setAttribute('aria-checked', String(checkbox.checked));
+
+            const textEl = $('.text', node);
+            textEl.textContent = todo.text;
+
+            // Editing triggers
+            textEl.addEventListener('dblclick', () => startEditing(node, todo));
+            $('.btn-edit', node).addEventListener('click', () => startEditing(node, todo));
+
+            list.appendChild(node);
+          });
+        }
+
+        // items left
+        const left = todos.filter(t=>!t.completed).length;
+        itemsLeft.textContent = `${left} item${left===1?'':'s'} left`;
+      }
+
+      function startEditing(li, todo){
+        if (!li || !todo) return;
+        if (li.classList.contains('editing')) return;
+        li.classList.add('editing');
+
+        const label = $('.todo', li);
+        const actions = $('.actions', li);
+        label.style.display = 'none';
+
+        const edit = document.createElement('input');
+        edit.type = 'text';
+        edit.className = 'edit-input';
+        edit.value = todo.text;
+        edit.setAttribute('aria-label', 'Edit todo');
+        li.insertBefore(edit, actions);
+        edit.focus();
+        edit.setSelectionRange(todo.text.length, todo.text.length);
+
+        let original = todo.text;
+        let committed = false;
+
+        const commit = ()=>{
+          if (committed) return;
+          committed = true;
+          const next = edit.value.trim();
+          edit.remove();
+          label.style.display = '';
+          li.classList.remove('editing');
+          if (next && next !== original){
+            updateTodoText(todo.id, next);
+          } else {
+            // re-render to ensure UI state consistent
+            render();
+          }
+        };
+        const cancel = ()=>{
+          committed = true;
+          edit.remove();
+          label.style.display = '';
+          li.classList.remove('editing');
+          render();
+        };
+
+        edit.addEventListener('keydown', (e)=>{
+          if (e.key === 'Enter'){ e.preventDefault(); commit(); }
+          else if (e.key === 'Escape'){ e.preventDefault(); cancel(); }
+        });
+        edit.addEventListener('blur', commit);
+      }
+
+      // Event listeners
+      form.addEventListener('submit', (e)=>{
         e.preventDefault();
-        addTodo(elInput.value);
-        elInput.value = '';
-        elInput.focus();
+        addTodo(input.value);
+        input.value = '';
+        input.focus();
       });
 
-      // Event delegation: remove
-      elList.addEventListener('click', (e) => {
-        const target = e.target;
-        if (target && target.classList.contains('btn-remove')) {
-          const idx = Number(target.dataset.index);
-          removeAt(idx);
+      clearCompletedBtn.addEventListener('click', clearCompleted);
+
+      filterButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          setFilter(btn.dataset.filter);
+        });
+      });
+
+      // Delegate list events
+      list.addEventListener('change', (e)=>{
+        const el = e.target;
+        if (el && el.classList.contains('toggle')){
+          const id = el.closest('.todo-item')?.dataset.id;
+          if (id) toggleTodo(id);
+        }
+      });
+      list.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.btn-delete');
+        if (btn){
+          const id = btn.closest('.todo-item')?.dataset.id;
+          if (id) deleteTodo(id);
         }
       });
 
       // Initialize
-      setSampleImage();
+      load();
       render();
-
-      // Quality of life: add with Enter quickly
-      elInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          // form submit already handles it; keep for responsiveness
-        }
-      });
     })();
   </script>
 </body>
