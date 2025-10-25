@@ -1,45 +1,40 @@
-# Todo List Web App
+# Todo List — Round 2
 
 ## Overview
-A minimal, fast, and accessible todo-list web app you can open directly in your browser. It supports:
-- Adding and removing todos instantly
-- A customizable header image via URL query parameter (?url=...)
-- A safe default sample image when none is provided
-- Lightweight, no dependencies, and persists todos locally via localStorage
+A lightweight, modern Todo List web app with a polished UI and zero dependencies. You can add, complete, edit, filter, and delete tasks. All your todos persist automatically in your browser via localStorage, so they’re still there the next time you open the page.
 
-The app is designed to load fast and let you add/remove items within seconds.
+Highlights:
+- Clean, responsive, accessible UI with subtle animations
+- Add, toggle complete, edit in place (double‑click or pencil), delete
+- Filter by All / Active / Completed and clear all completed
+- Auto‑save and restore using localStorage
 
 ## Setup
-No build step or server required.
+- No build steps or external dependencies required.
+- Download this folder and open index.html in any modern browser.
 
-- Clone or download the repository.
-- Open index.html in any modern browser.
-
-Optional: You can also serve it locally (for example):
-- Python 3: python -m http.server 8080 and open http://localhost:8080
+Tip: You can also serve it locally (optional) with any static server, e.g., using Python:
+- Python 3: python -m http.server
+- Then visit http://localhost:8000
 
 ## Usage
-- Type a task into the input field and press Add (or Enter) to create a todo.
-- Click Remove to delete a todo.
-- Task count is shown at the top right.
+- Add a todo: Type in the input and press Enter or click Add.
+- Complete a todo: Click its checkbox.
+- Edit a todo: Double‑click the text or click the pencil icon. Press Enter to save, Esc to cancel.
+- Delete a todo: Click the trash icon.
+- Filter: Use All / Active / Completed to control the view (your last filter is remembered).
+- Clear completed: Click “Clear completed” to remove all completed tasks.
+- Persistence: Everything is saved automatically to localStorage and restored on reload.
 
-Custom header image:
-- Provide an image URL via the url query parameter.
-- Example:
-  - index.html?url=https%3A%2F%2Fpicsum.photos%2F800%2F300
-- Allowed URL schemes: http, https, and data:image/... URIs.
-- If the provided URL is invalid or fails to load, a built-in SVG placeholder is used automatically.
+Keyboard tips:
+- Enter in the new‑todo input adds a task.
+- While editing, Enter saves, Esc cancels.
 
-Persistence:
-- Todos are saved in your browser’s localStorage and will reappear on reload.
-
-## License
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+## Improvements from Round 1
+This Round 2 release includes several enhancements over the Round 1 version:
+- Added persistence: Todos now automatically save to and load from localStorage.
+- Upgraded UI styling: Modern, responsive design with a glassy card, gradient background, accent colors, and subtle animations.
+- Better UX controls: Filter tabs (All/Active/Completed), Clear Completed button, and an empty‑state message.
+- Inline editing: Double‑click or use the pencil to edit tasks directly in the list.
+- Accessibility: Improved focus states, ARIA labels, and keyboard‑friendly interactions.
+- State indicators: “Saved … ago” timestamp to reflect local save actions.
